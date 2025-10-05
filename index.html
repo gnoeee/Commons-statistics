@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wikimedia Commons — Media Statistics Dashboard</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#7dd3fc}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+    body{background:linear-gradient(180deg,#071025 0%, #07172a 100%);color:#e6eef6;padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    header h1{font-size:20px;margin:0}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .kpi-label{font-size:12px;color:var(--muted)}
+    .kpi-value{font-size:18px;font-weight:600}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+    #charts{height:520px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px}
+    th{color:var(--muted);font-weight:600}
+    .small{font-size:12px;color:var(--muted)}
+    .footer{margin-top:14px;color:var(--muted);font-size:13px}
+    a.btn{display:inline-block;background:rgba(125,211,252,0.12);padding:8px 10px;border-radius:8px;color:var(--accent);text-decoration:none;font-weight:600}
+    @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%237dd3fc'/></svg>" alt="logo" style="width:36px;height:36px;border-radius:8px;"/>
+      <div>
+        <h1>Wikimedia Commons — Media Statistics (Live)</h1>
+        <div class="small">Automatically updated daily from <a href="https://commons.wikimedia.org/wiki/Special:MediaStatistics" target="_blank">Special:MediaStatistics</a></div>
+      </div>
+    </header>
+
+    <div class="kpis">
+      <div class="card">
+        <div class="kpi-label">Total files</div>
+        <div id="kpi-total-files" class="kpi-value">Loading…</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Total size (TiB)</div>
+        <div id="kpi-total-size" class="kpi-value">Loading…</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Top type by count</div>
+        <div id="kpi-top-count" class="kpi-value">Loading…</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Top type by size</div>
+        <div id="kpi-top-size" class="kpi-value">Loading…</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" style="padding:12px">
+        <strong>Charts</strong>
+        <div id="charts"></div>
+      </div>
+
+      <div class="card" style="padding:12px;overflow:auto;max-height:520px">
+        <strong>Data table</strong>
+        <table id="data-table">
+          <thead><tr><th>MIME type</th><th>Extensions</th><th>Files</th><th>Size (TiB)</th><th>% of total</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>© Wikimedia Commons Data • Updated automatically via GitHub Actions • Built by <a href="https://github.com/your-username" target="_blank">your-username</a></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.plot.ly/plotly-2.29.1.min.js"></script>
+  <script>
+  async function loadData(){
+    try {
+      const res = await fetch('data/media_stats.json?_=' + Date.now());
+      const json = await res.json();
+      return json.entries;
+    } catch(e){
+      console.error("Failed to load data:", e);
+      document.body.innerHTML = "<h2 style='color:red;text-align:center;'>Failed to load media_stats.json</h2>";
+      return [];
+    }
+  }
+
+  function bytesToTB(b){ return +(b / (1024**4)).toFixed(3); }
+
+  loadData().then(DATA => {
+    if (!DATA.length) return;
+
+    const totalFiles = DATA.reduce((s,d)=>s+d.files,0);
+    const totalBytes = DATA.reduce((s,d)=>s+d.size_bytes,0);
+    document.getElementById('kpi-total-files').textContent = totalFiles.toLocaleString();
+    document.getElementById('kpi-total-size').textContent = bytesToTB(totalBytes) + ' TiB';
+
+    const topByCount = DATA.slice().sort((a,b)=>b.files-a.files)[0];
+    const topBySize = DATA.slice().sort((a,b)=>b.size_bytes-a.size_bytes)[0];
+    document.getElementById('kpi-top-count').textContent = topByCount.mime + " (" + topByCount.files.toLocaleString() + ")";
+    document.getElementById('kpi-top-size').textContent = topBySize.mime + " (" + bytesToTB(topBySize.size_bytes) + " TiB)";
+
+    // populate table
+    const tbody = document.querySelector('#data-table tbody');
+    DATA.forEach(d=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${d.mime}</td><td class="small">${d.ext}</td><td>${d.files.toLocaleString()}</td><td>${bytesToTB(d.size_bytes)}</td><td>${((d.size_bytes/totalBytes)*100).toFixed(2)}%</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // chart
+    const top = DATA.sort((a,b)=>b.size_bytes-a.size_bytes).slice(0,10);
+    Plotly.newPlot('charts', [{
+      x: top.map(d=>d.mime),
+      y: top.map(d=>bytesToTB(d.size_bytes)),
+      type: 'bar',
+      marker: {color: '#7dd3fc'},
+      hovertemplate: '%{x}<br>%{y} TiB<extra></extra>'
+    }], {
+      title: 'Top 10 File Types by Total Size (TiB)',
+      margin:{t:40,b:120},
+      xaxis:{tickangle:-45},
+      yaxis:{title:'Size (TiB)'},
+      plot_bgcolor:'transparent',
+      paper_bgcolor:'transparent',
+      font:{color:'#e6eef6'}
+    }, {responsive:true});
+  });
+  </script>
+</body>
+</html>
