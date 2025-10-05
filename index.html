@@ -127,7 +127,7 @@
       if(group==='images') rows = rows.filter(r=>r.mime.startsWith('image/'));
       if(group==='audio') rows = rows.filter(r=>r.mime.startsWith('audio/')||r.mime==='application/ogg');
       if(group==='video') rows = rows.filter(r=>r.mime.startsWith('video/'));
-      if(group==='documents') rows = rows.filter(r=>r.mime.includes('pdf')||r.mime.includes('application'));
+      if(group==='documents') rows = rows.filter(r=>r.mime.includes('pdf')||r.mime==='image/vnd.djvu');
       if(group==='3d') rows = rows.filter(r=>r.mime.includes('sla')||r.mime.includes('stl'));
 
       const top10 = rows.slice().sort((a,b)=>b.size_bytes-a.size_bytes).slice(0,10);
