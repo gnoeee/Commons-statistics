@@ -20,15 +20,10 @@ for row in soup.select("table tr"):
         mime = cells[0]
         exts = cells[1] if len(cells) > 1 else ""
         files_text = cells[2]
-
-        # ✅ FIXED: Handles commas and parentheses correctly
         file_match = re.match(r"^\s*([\d,]+)", files_text)
         files = int(file_match.group(1).replace(",", "")) if file_match else 0
-
         percent_match = re.search(r"\(([\d.]+)%\)", files_text)
         percent = float(percent_match.group(1)) if percent_match else 0.0
-
-        # Extract total size in bytes
         size_bytes_match = re.search(r"([0-9,]+)\s*bytes", " ".join(cells))
         size_bytes = int(size_bytes_match.group(1).replace(",", "")) if size_bytes_match else 0
 
@@ -50,4 +45,4 @@ out = {"source": URL, "entries": data}
 # Save JSON
 with open("data/media_stats.json", "w", encoding="utf-8") as f:
     json.dump(out, f, indent=2, ensure_ascii=False)
-print("Saved data/media_stats.json ✅")
+print("Saved data/media_stats.json")
