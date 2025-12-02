@@ -18,65 +18,65 @@
     {
       "mime": "image/webp",
       "ext": ".webp",
-      "files": 54026,
-      "percent": 0.0414,
-      "size_bytes": 35241456703
+      "files": 54117,
+      "percent": 0.0415,
+      "size_bytes": 35269992921
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
-      "files": 243994,
+      "files": 244060,
       "percent": 0.187,
-      "size_bytes": 1186192906851
+      "size_bytes": 1186304023770
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
-      "files": 2939385,
-      "percent": 2.25,
-      "size_bytes": 177622089694952
+      "files": 2960551,
+      "percent": 2.27,
+      "size_bytes": 181992502023186
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
-      "files": 4562346,
+      "files": 4565004,
       "percent": 3.5,
-      "size_bytes": 14839056403506
+      "size_bytes": 14849527432911
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
-      "files": 108286424,
+      "files": 108400312,
       "percent": 83.0,
-      "size_bytes": 381828206097315
+      "size_bytes": 382491299241397
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
-      "files": 3448373,
+      "files": 3451795,
       "percent": 2.64,
-      "size_bytes": 1045194696455
+      "size_bytes": 1046226220347
     },
     {
       "mime": "audio/webm",
       "ext": ".webm",
-      "files": 310,
-      "percent": 0.000238,
-      "size_bytes": 22596421390
+      "files": 315,
+      "percent": 0.000241,
+      "size_bytes": 22613326239
     },
     {
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
       "files": 7003,
-      "percent": 0.00537,
+      "percent": 0.00536,
       "size_bytes": 28048650
     },
     {
       "mime": "audio/flac",
       "ext": ".flac",
-      "files": 16050,
+      "files": 16051,
       "percent": 0.0123,
-      "size_bytes": 43614872162
+      "size_bytes": 43631737048
     },
     {
       "mime": "audio/x-flac",
@@ -88,23 +88,23 @@
     {
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
-      "files": 31502,
-      "percent": 0.0242,
-      "size_bytes": 356432513893
+      "files": 31521,
+      "percent": 0.0241,
+      "size_bytes": 356846936832
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
-      "files": 1547170,
+      "files": 1551375,
       "percent": 1.19,
-      "size_bytes": 652794936719
+      "size_bytes": 653322890521
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 2403447,
+      "files": 2403747,
       "percent": 1.84,
-      "size_bytes": 851463968181
+      "size_bytes": 854303577983
     },
     {
       "mime": "video/mp4",
@@ -117,43 +117,43 @@
       "mime": "video/mpeg",
       "ext": ".mpg, .mpeg, .mpe",
       "files": 1018,
-      "percent": 0.000781,
+      "percent": 0.00078,
       "size_bytes": 197156379488
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 153034,
+      "files": 153039,
       "percent": 0.117,
-      "size_bytes": 3156946566973
+      "size_bytes": 3157169551791
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
-      "files": 217856,
+      "files": 217999,
       "percent": 0.167,
-      "size_bytes": 35878325592327
+      "size_bytes": 35905874049941
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
-      "files": 367831,
+      "files": 367858,
       "percent": 0.282,
-      "size_bytes": 4311917845163
+      "size_bytes": 4312329106641
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
-      "files": 6093648,
+      "files": 6094077,
       "percent": 4.67,
-      "size_bytes": 191398115018077
+      "size_bytes": 191512292154246
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
-      "files": 11111,
+      "files": 11125,
       "percent": 0.00852,
-      "size_bytes": 284594429205
+      "size_bytes": 284598279181
     }
   ]
 }
