@@ -5,78 +5,78 @@
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
       "files": 6,
-      "percent": 4.59e-06,
+      "percent": 4.58e-06,
       "size_bytes": 54375946
     },
     {
       "mime": "image/x-xcf",
       "ext": ".xcf",
-      "files": 1697,
+      "files": 1696,
       "percent": 0.0013,
-      "size_bytes": 14300651657
+      "size_bytes": 14300349159
     },
     {
       "mime": "image/webp",
       "ext": ".webp",
-      "files": 54547,
-      "percent": 0.0417,
-      "size_bytes": 35626910503
+      "files": 54686,
+      "percent": 0.0418,
+      "size_bytes": 35675321995
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
-      "files": 244243,
+      "files": 244294,
       "percent": 0.187,
-      "size_bytes": 1190477397676
+      "size_bytes": 1191206624797
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
-      "files": 3052516,
-      "percent": 2.33,
-      "size_bytes": 191774003739834
+      "files": 3083639,
+      "percent": 2.36,
+      "size_bytes": 197619430911832
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
-      "files": 4570484,
+      "files": 4572678,
       "percent": 3.49,
-      "size_bytes": 14865517585786
+      "size_bytes": 14872658728117
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
-      "files": 108516314,
+      "files": 108577841,
       "percent": 83.0,
-      "size_bytes": 383086094135756
+      "size_bytes": 383363938705920
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
-      "files": 3467213,
+      "files": 3468448,
       "percent": 2.65,
-      "size_bytes": 1046741283616
+      "size_bytes": 1047094695656
     },
     {
       "mime": "audio/webm",
       "ext": ".webm",
       "files": 316,
-      "percent": 0.000242,
+      "percent": 0.000241,
       "size_bytes": 22621084512
     },
     {
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
       "files": 7005,
-      "percent": 0.00536,
+      "percent": 0.00535,
       "size_bytes": 28067511
     },
     {
       "mime": "audio/flac",
       "ext": ".flac",
-      "files": 16054,
+      "files": 16055,
       "percent": 0.0123,
-      "size_bytes": 44226073778
+      "size_bytes": 44239098380
     },
     {
       "mime": "audio/x-flac",
@@ -88,23 +88,23 @@
     {
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
-      "files": 31539,
+      "files": 31572,
       "percent": 0.0241,
-      "size_bytes": 357173121545
+      "size_bytes": 357384364252
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
-      "files": 1556457,
+      "files": 1558029,
       "percent": 1.19,
-      "size_bytes": 653981490341
+      "size_bytes": 654368595953
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 2406484,
+      "files": 2406684,
       "percent": 1.84,
-      "size_bytes": 854955229842
+      "size_bytes": 855585941688
     },
     {
       "mime": "video/mp4",
@@ -117,43 +117,43 @@
       "mime": "video/mpeg",
       "ext": ".mpg, .mpeg, .mpe",
       "files": 1021,
-      "percent": 0.000781,
-      "size_bytes": 197526827880
+      "percent": 0.00078,
+      "size_bytes": 201482607464
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 153040,
+      "files": 153044,
       "percent": 0.117,
-      "size_bytes": 3157174906111
+      "size_bytes": 3158061370665
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
-      "files": 218753,
+      "files": 218998,
       "percent": 0.167,
-      "size_bytes": 36018376306403
+      "size_bytes": 36104366756196
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
-      "files": 367935,
+      "files": 367966,
       "percent": 0.281,
-      "size_bytes": 4313458114422
+      "size_bytes": 4313988952046
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
-      "files": 6095358,
+      "files": 6095871,
       "percent": 4.66,
-      "size_bytes": 191580452606199
+      "size_bytes": 191635192900904
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
-      "files": 11131,
-      "percent": 0.00851,
-      "size_bytes": 284620135335
+      "files": 11132,
+      "percent": 0.0085,
+      "size_bytes": 284620164519
     }
   ]
 }
