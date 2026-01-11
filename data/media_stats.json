@@ -5,7 +5,7 @@
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
       "files": 12,
-      "percent": 9.07e-06,
+      "percent": 9.06e-06,
       "size_bytes": 123692531
     },
     {
@@ -18,64 +18,64 @@
     {
       "mime": "image/webp",
       "ext": ".webp",
-      "files": 55782,
-      "percent": 0.0422,
-      "size_bytes": 36089218783
+      "files": 55820,
+      "percent": 0.0421,
+      "size_bytes": 36171492681
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
-      "files": 245074,
+      "files": 245207,
       "percent": 0.185,
-      "size_bytes": 1197391642994
+      "size_bytes": 1199281180788
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
-      "files": 3576282,
-      "percent": 2.7,
-      "size_bytes": 245981660101924
+      "files": 3620931,
+      "percent": 2.73,
+      "size_bytes": 249074982465467
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
-      "files": 4597041,
+      "files": 4599430,
       "percent": 3.47,
-      "size_bytes": 15024773410371
+      "size_bytes": 15040351002315
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
-      "files": 109254716,
-      "percent": 82.6,
-      "size_bytes": 386013912724531
+      "files": 109314732,
+      "percent": 82.5,
+      "size_bytes": 386223368573907
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
-      "files": 3651018,
-      "percent": 2.76,
-      "size_bytes": 1063478535239
+      "files": 3665730,
+      "percent": 2.77,
+      "size_bytes": 1064944854077
     },
     {
       "mime": "audio/webm",
       "ext": ".webm",
       "files": 325,
-      "percent": 0.000246,
+      "percent": 0.000245,
       "size_bytes": 22645816234
     },
     {
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
       "files": 7007,
-      "percent": 0.0053,
+      "percent": 0.00529,
       "size_bytes": 28073123
     },
     {
       "mime": "audio/flac",
       "ext": ".flac",
       "files": 16078,
-      "percent": 0.0122,
+      "percent": 0.0121,
       "size_bytes": 44474086370
     },
     {
@@ -88,23 +88,23 @@
     {
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
-      "files": 31778,
+      "files": 31796,
       "percent": 0.024,
-      "size_bytes": 359895317304
+      "size_bytes": 360308734276
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
-      "files": 1575825,
+      "files": 1577839,
       "percent": 1.19,
-      "size_bytes": 659213953241
+      "size_bytes": 659700073209
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 2428771,
-      "percent": 1.84,
-      "size_bytes": 859618875638
+      "files": 2428975,
+      "percent": 1.83,
+      "size_bytes": 859861267915
     },
     {
       "mime": "video/mp4",
@@ -123,37 +123,37 @@
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 153419,
+      "files": 153474,
       "percent": 0.116,
-      "size_bytes": 3165314223423
+      "size_bytes": 3166097969721
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
-      "files": 221237,
+      "files": 221629,
       "percent": 0.167,
-      "size_bytes": 36844439132603
+      "size_bytes": 36961294914075
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
-      "files": 368290,
+      "files": 368306,
       "percent": 0.278,
-      "size_bytes": 4323506908628
+      "size_bytes": 4324520260413
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
-      "files": 6109471,
-      "percent": 4.62,
-      "size_bytes": 193567218169103
+      "files": 6111005,
+      "percent": 4.61,
+      "size_bytes": 193659203783494
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
-      "files": 11136,
-      "percent": 0.00842,
-      "size_bytes": 284733661391
+      "files": 11137,
+      "percent": 0.00841,
+      "size_bytes": 284735982775
     }
   ]
 }
