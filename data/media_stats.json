@@ -5,57 +5,57 @@
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
       "files": 12,
-      "percent": 9.05e-06,
+      "percent": 9.04e-06,
       "size_bytes": 123692531
     },
     {
       "mime": "image/x-xcf",
       "ext": ".xcf",
-      "files": 1695,
+      "files": 1696,
       "percent": 0.00128,
-      "size_bytes": 14299557564
+      "size_bytes": 14305646520
     },
     {
       "mime": "image/webp",
       "ext": ".webp",
-      "files": 55888,
+      "files": 55994,
       "percent": 0.0422,
-      "size_bytes": 36784502899
+      "size_bytes": 37222522543
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
-      "files": 245345,
+      "files": 245409,
       "percent": 0.185,
-      "size_bytes": 1199793706665
+      "size_bytes": 1200944068126
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
-      "files": 3685528,
-      "percent": 2.78,
-      "size_bytes": 255003298864260
+      "files": 3738902,
+      "percent": 2.82,
+      "size_bytes": 260350487126909
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
-      "files": 4602099,
+      "files": 4604168,
       "percent": 3.47,
-      "size_bytes": 15058442245870
+      "size_bytes": 15064934728570
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
-      "files": 109384439,
+      "files": 109440327,
       "percent": 82.5,
-      "size_bytes": 386478789509144
+      "size_bytes": 386756091380709
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
-      "files": 3666605,
-      "percent": 2.77,
-      "size_bytes": 1065912806703
+      "files": 3668721,
+      "percent": 2.76,
+      "size_bytes": 1066337035954
     },
     {
       "mime": "audio/webm",
@@ -68,7 +68,7 @@
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
       "files": 7010,
-      "percent": 0.00529,
+      "percent": 0.00528,
       "size_bytes": 28128143
     },
     {
@@ -88,23 +88,23 @@
     {
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
-      "files": 31882,
-      "percent": 0.024,
-      "size_bytes": 361379209972
+      "files": 32052,
+      "percent": 0.0242,
+      "size_bytes": 361728635292
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
-      "files": 1579151,
+      "files": 1583615,
       "percent": 1.19,
-      "size_bytes": 660926094909
+      "size_bytes": 661671111039
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 2429457,
+      "files": 2429971,
       "percent": 1.83,
-      "size_bytes": 862229146735
+      "size_bytes": 861809354254
     },
     {
       "mime": "video/mp4",
@@ -117,43 +117,43 @@
       "mime": "video/mpeg",
       "ext": ".mpg, .mpeg, .mpe",
       "files": 1034,
-      "percent": 0.00078,
+      "percent": 0.000779,
       "size_bytes": 203581875048
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 153525,
+      "files": 153571,
       "percent": 0.116,
-      "size_bytes": 3166689246087
+      "size_bytes": 3167087837585
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
-      "files": 221967,
+      "files": 222124,
       "percent": 0.167,
-      "size_bytes": 37128838287923
+      "size_bytes": 37204268680960
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
-      "files": 368334,
+      "files": 368413,
       "percent": 0.278,
-      "size_bytes": 4325084352007
+      "size_bytes": 4325419715721
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
-      "files": 6113223,
+      "files": 6115105,
       "percent": 4.61,
-      "size_bytes": 193737938824860
+      "size_bytes": 193846256859684
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
-      "files": 11138,
-      "percent": 0.0084,
-      "size_bytes": 284736046436
+      "files": 11140,
+      "percent": 0.00839,
+      "size_bytes": 284736118404
     }
   ]
 }
