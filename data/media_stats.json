@@ -5,7 +5,7 @@
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
       "files": 11,
-      "percent": 7.34e-06,
+      "percent": 7.33e-06,
       "size_bytes": 116730460
     },
     {
@@ -18,65 +18,65 @@
     {
       "mime": "image/webp",
       "ext": ".webp",
-      "files": 69240,
+      "files": 69384,
       "percent": 0.0462,
-      "size_bytes": 46864693083
+      "size_bytes": 46946052267
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
-      "files": 412993,
+      "files": 413045,
       "percent": 0.275,
-      "size_bytes": 1434660595870
+      "size_bytes": 1435869618223
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
-      "files": 4927906,
-      "percent": 3.29,
-      "size_bytes": 414074320780013
+      "files": 4944008,
+      "percent": 3.3,
+      "size_bytes": 414244659559660
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
-      "files": 5616082,
+      "files": 5618773,
       "percent": 3.75,
-      "size_bytes": 24583872149516
+      "size_bytes": 24611378772893
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
-      "files": 121349866,
+      "files": 121440711,
       "percent": 80.9,
-      "size_bytes": 433583797478069
+      "size_bytes": 434188394223799
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
-      "files": 5319500,
+      "files": 5320993,
       "percent": 3.55,
-      "size_bytes": 1334887479687
+      "size_bytes": 1335567072572
     },
     {
       "mime": "audio/webm",
       "ext": ".webm",
-      "files": 342,
-      "percent": 0.000228,
-      "size_bytes": 6176018690
+      "files": 345,
+      "percent": 0.00023,
+      "size_bytes": 6176293204
     },
     {
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
-      "files": 7119,
+      "files": 7120,
       "percent": 0.00475,
-      "size_bytes": 30196396
+      "size_bytes": 30202704
     },
     {
       "mime": "audio/flac",
       "ext": ".flac",
-      "files": 16402,
+      "files": 16408,
       "percent": 0.0109,
-      "size_bytes": 49563282661
+      "size_bytes": 49891620421
     },
     {
       "mime": "audio/x-flac",
@@ -89,22 +89,22 @@
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
       "files": 51809,
-      "percent": 0.0346,
-      "size_bytes": 833644283361
+      "percent": 0.0345,
+      "size_bytes": 833290811552
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
-      "files": 1723218,
+      "files": 1723943,
       "percent": 1.15,
-      "size_bytes": 759391506885
+      "size_bytes": 760533817691
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 2621415,
+      "files": 2622592,
       "percent": 1.75,
-      "size_bytes": 874810365139
+      "size_bytes": 875783056499
     },
     {
       "mime": "video/mp4",
@@ -123,37 +123,37 @@
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
-      "files": 157870,
+      "files": 157915,
       "percent": 0.105,
-      "size_bytes": 3227673971366
+      "size_bytes": 3228338046959
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
-      "files": 256239,
+      "files": 256540,
       "percent": 0.171,
-      "size_bytes": 43016498922616
+      "size_bytes": 43106435231217
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
-      "files": 371433,
+      "files": 371466,
       "percent": 0.248,
-      "size_bytes": 4413417274364
+      "size_bytes": 4414089005755
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
-      "files": 6976247,
+      "files": 6981781,
       "percent": 4.65,
-      "size_bytes": 233033891580961
+      "size_bytes": 233500108397646
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
-      "files": 11744,
-      "percent": 0.00783,
-      "size_bytes": 295480198846
+      "files": 11765,
+      "percent": 0.00784,
+      "size_bytes": 295856774660
     }
   ]
 }
