@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Wikimedia Commons — Media Statistics Dashboard</title>
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
   <script src="https://cdn.plot.ly/plotly-2.29.1.min.js"></script>
   <style>
     :root {
@@ -14,6 +14,7 @@
       --muted: #8b949e;
       --text: #e6edf3;
     }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "Inter", system-ui, sans-serif;
@@ -21,9 +22,11 @@
       color: var(--text);
       padding: 24px;
     }
+    a { color: var(--accent); }
     .container { max-width: 1200px; margin: auto; }
     header { text-align: center; margin-bottom: 1.5rem; }
     h1 { margin: 0; font-size: 1.6rem; color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.9rem; }
     .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 1rem; }
     .kpi {
       background: var(--card);
@@ -31,9 +34,10 @@
       padding: 16px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      min-width: 0;
     }
     .kpi-label { color: var(--muted); font-size: 0.9rem; }
-    .kpi-value { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
+    .kpi-value { font-size: 1.4rem; font-weight: bold; color: var(--accent); overflow-wrap: anywhere; }
     .filters { text-align: center; margin: 1.2rem 0; }
     button.filter {
       background: var(--card);
@@ -45,23 +49,35 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-    button.filter.active { background: var(--accent); color: #fff; }
+    button.filter:hover { background: #1f2a37; }
+    button.filter.active { background: var(--accent); color: #0d1117; font-weight: 600; }
+    button.filter:disabled { opacity: 0.4; cursor: default; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .chart-box {
       background: var(--card);
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      min-width: 0;
     }
+    .error { background: #3d1418; border: 1px solid #f85149; color: #ffdcd7; padding: 12px; border-radius: 8px; margin-bottom: 1rem; display: none; }
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.85rem;
     }
     th, td { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px; text-align: left; }
-    th { color: var(--muted); }
+    th { color: var(--muted); position: sticky; top: 0; background: var(--card); }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     @media (max-width: 900px) {
       .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      body { padding: 12px; }
+      h1 { font-size: 1.25rem; }
+      .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi { padding: 10px; }
+      .kpi-value { font-size: 1.05rem; }
     }
   </style>
 </head>
@@ -69,12 +85,14 @@
   <div class="container">
     <header>
       <h1>📊 Wikimedia Commons — Media Statistics Dashboard</h1>
-      <p style="color: var(--muted); font-size: 0.9rem;">Live data fetched daily from <a href="https://commons.wikimedia.org/wiki/Special:MediaStatistics" target="_blank" style="color: var(--accent);">Special:MediaStatistics</a></p>
+      <p class="subtitle">Data fetched daily from <a href="https://commons.wikimedia.org/wiki/Special:MediaStatistics" target="_blank" rel="noopener">Special:MediaStatistics</a><span id="updated"></span></p>
     </header>
+
+    <div id="error" class="error" role="alert"></div>
 
     <div class="kpis">
       <div class="kpi"><div class="kpi-label">Total Files</div><div id="kpi-files" class="kpi-value">—</div></div>
-      <div class="kpi"><div class="kpi-label">Total Size (TiB)</div><div id="kpi-size" class="kpi-value">—</div></div>
+      <div class="kpi"><div class="kpi-label">Total Size</div><div id="kpi-size" class="kpi-value">—</div></div>
       <div class="kpi"><div class="kpi-label">Top by Count</div><div id="kpi-top-count" class="kpi-value">—</div></div>
       <div class="kpi"><div class="kpi-label">Top by Size</div><div id="kpi-top-size" class="kpi-value">—</div></div>
     </div>
@@ -96,97 +114,232 @@
 
     <div class="chart-box" style="margin-top:12px;overflow:auto;max-height:450px;">
       <table id="data-table">
-        <thead><tr><th>MIME type</th><th>Extensions</th><th>Files</th><th>Size (TiB)</th><th>% of total</th></tr></thead>
+        <thead><tr>
+          <th>MIME type</th><th>Section</th><th>Extensions</th>
+          <th class="num">Files</th><th class="num">% of files</th>
+          <th class="num">Size</th><th class="num">% of size</th>
+        </tr></thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
 
   <script>
-  async function loadData() {
-    const res = await fetch('data/media_stats.json?_=' + Date.now());
-    const json = await res.json();
-    return json.entries;
+  // Which Special:MediaStatistics sections belong to each filter button.
+  const GROUPS = {
+    all: null,
+    images: ['bitmap', 'drawing'],
+    audio: ['audio'],
+    video: ['video', 'multimedia'],
+    documents: ['office', 'text'],
+    '3d': ['3d'],
+  };
+  const SECTION_LABELS = {
+    bitmap: 'Bitmap images', drawing: 'Drawings', audio: 'Audio', video: 'Videos',
+    multimedia: 'Multimedia', office: 'Office', text: 'Text', '3d': '3D', unknown: 'Other',
+  };
+
+  // Older data files have no "category"; infer one so the page still works.
+  function guessCategory(d, index, all) {
+    if (d.category) return d.category;
+    const m = d.mime;
+    if (m === 'image/svg+xml') return 'drawing';
+    if (m === 'image/vnd.djvu') {
+      const djvus = all.filter(x => x.mime === m);
+      return (djvus.length > 1 && djvus[0] === d) ? 'bitmap' : 'office';
+    }
+    if (m === 'application/ogg') {
+      const oggs = all.filter(x => x.mime === m);
+      return (oggs.length > 1 && oggs[0] === d) ? 'audio' : 'video';
+    }
+    if (m.startsWith('image/')) return 'bitmap';
+    if (m.startsWith('audio/')) return 'audio';
+    if (m.startsWith('video/')) return 'video';
+    if (m === 'application/pdf') return 'office';
+    if (m.includes('sla') || m.includes('stl')) return '3d';
+    return 'unknown';
   }
 
-  function bytesToTB(b) { return +(b / (1024 ** 4)).toFixed(3); }
+  const fmtInt = n => n.toLocaleString('en-US');
+  function fmtBytes(b) {
+    const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+    let i = 0;
+    while (b >= 1024 && i < units.length - 1) { b /= 1024; i++; }
+    return `${b.toLocaleString('en-US', { maximumFractionDigits: b < 10 ? 2 : 1 })} ${units[i]}`;
+  }
+  function fmtPct(p) {
+    if (p === 0) return '0%';
+    if (p < 0.01) return '<0.01%';
+    return p.toLocaleString('en-US', { maximumFractionDigits: 2 }) + '%';
+  }
+  const bytesToTiB = b => b / 1024 ** 4;
 
-  loadData().then(DATA => {
-    const totalFiles = DATA.reduce((s,d)=>s+d.files,0);
-    const totalBytes = DATA.reduce((s,d)=>s+d.size_bytes,0);
-    document.getElementById('kpi-files').textContent = totalFiles.toLocaleString();
-    document.getElementById('kpi-size').textContent = bytesToTB(totalBytes);
+  const LAYOUT = {
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { color: '#e6edf3' },
+    xaxis: { gridcolor: 'rgba(255,255,255,0.08)', automargin: true },
+    yaxis: { gridcolor: 'rgba(255,255,255,0.08)', automargin: true },
+  };
+  const CONFIG = { responsive: true, displaylogo: false };
 
-    const topByCount = DATA.slice().sort((a,b)=>b.files-a.files)[0];
-    const topBySize = DATA.slice().sort((a,b)=>b.size_bytes-a.size_bytes)[0];
-    document.getElementById('kpi-top-count').textContent = topByCount.mime;
-    document.getElementById('kpi-top-size').textContent = topBySize.mime;
+  function showError(msg) {
+    const el = document.getElementById('error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
 
-    function render(group){
-      let rows = DATA.slice();
-      if(group==='images') rows = rows.filter(r=>r.mime.startsWith('image/'));
-      if(group==='audio') rows = rows.filter(r=>r.mime.startsWith('audio/')||r.mime==='application/ogg');
-      if(group==='video') rows = rows.filter(r=>r.mime.startsWith('video/'));
-      if(group==='documents') rows = rows.filter(r=>r.mime.includes('pdf')||r.mime==='image/vnd.djvu');
-      if(group==='3d') rows = rows.filter(r=>r.mime.includes('sla')||r.mime.includes('stl'));
+  async function loadData() {
+    const res = await fetch('data/media_stats.json?_=' + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status} loading data/media_stats.json`);
+    return res.json();
+  }
 
-      const top10 = rows.slice().sort((a,b)=>b.size_bytes-a.size_bytes).slice(0,10);
+  loadData().then(json => {
+    const raw = json.entries || [];
+    if (!raw.length) throw new Error('The data file contains no entries.');
 
-      Plotly.newPlot('pie-chart', [{
-        labels: rows.map(r=>r.mime),
-        values: rows.map(r=>r.files),
+    const DATA = raw.map((d, i, all) => {
+      const category = guessCategory(d, i, all);
+      return { ...d, category, section: SECTION_LABELS[category] || d.category_label || category };
+    });
+    // Some MIME types appear in more than one section (e.g. application/ogg under
+    // Audio and Videos); give them unique labels so charts don't merge/overlap them.
+    const counts = {};
+    DATA.forEach(d => counts[d.mime] = (counts[d.mime] || 0) + 1);
+    DATA.forEach(d => d.label = counts[d.mime] > 1 ? `${d.mime} (${d.section})` : d.mime);
+
+    const allFiles = DATA.reduce((s, d) => s + d.files, 0);
+    const allBytes = DATA.reduce((s, d) => s + d.size_bytes, 0);
+    const totalFiles = (json.totals && json.totals.files) || allFiles;
+    const totalBytes = (json.totals && json.totals.size_bytes) || allBytes;
+
+    if (json.updated) {
+      const dt = new Date(json.updated);
+      document.getElementById('updated').textContent =
+        ` · last updated ${dt.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}`;
+    }
+
+    function filterRows(group) {
+      const cats = GROUPS[group];
+      return cats ? DATA.filter(d => cats.includes(d.category)) : DATA.slice();
+    }
+
+    // Disable filter buttons that would show nothing.
+    document.querySelectorAll('.filter').forEach(btn => {
+      if (!filterRows(btn.dataset.group).length) btn.disabled = true;
+    });
+
+    function render(group) {
+      const rows = filterRows(group).sort((a, b) => b.size_bytes - a.size_bytes);
+      const files = rows.reduce((s, d) => s + d.files, 0);
+      const bytes = rows.reduce((s, d) => s + d.size_bytes, 0);
+
+      document.getElementById('kpi-files').textContent = fmtInt(files);
+      document.getElementById('kpi-size').textContent = fmtBytes(bytes);
+      const topByCount = rows.slice().sort((a, b) => b.files - a.files)[0];
+      document.getElementById('kpi-top-count').textContent = topByCount ? topByCount.label : '—';
+      document.getElementById('kpi-top-size').textContent = rows[0] ? rows[0].label : '—';
+
+      renderTable(rows);
+      if (typeof Plotly === 'undefined') {
+        showError('The charting library (Plotly) failed to load; showing the table only.');
+        ['pie-chart', 'bar-chart', 'top10-chart'].forEach(id =>
+          document.getElementById(id).parentElement.style.display = 'none');
+        return;
+      }
+      renderCharts(rows);
+    }
+
+    function renderCharts(rows) {
+      Plotly.react('pie-chart', [{
+        labels: rows.map(r => r.label),
+        values: rows.map(r => r.files),
         type: 'pie',
-        textinfo: 'label+percent',
-        hovertemplate: '%{label}<br>%{value:,} files<extra></extra>'
+        hole: 0.35,
+        sort: true,
+        textinfo: 'percent',
+        textposition: 'inside',
+        insidetextorientation: 'horizontal',
+        hovertemplate: '%{label}<br>%{value:,} files (%{percent})<extra></extra>',
       }], {
+        ...LAYOUT,
         title: 'File Count Distribution',
-        paper_bgcolor:'transparent', plot_bgcolor:'transparent',
-        font:{color:'#e6edf3'}
-      });
+        uniformtext: { minsize: 10, mode: 'hide' },
+        legend: { font: { size: 10 } },
+        showlegend: window.innerWidth > 600,
+        height: window.innerWidth > 600 ? 450 : 340,
+        margin: { t: 50, b: 20, l: 10, r: 10 },
+      }, CONFIG);
 
-      Plotly.newPlot('bar-chart', [{
-        x: rows.map(r=>r.mime),
-        y: rows.map(r=>bytesToTB(r.size_bytes)),
+      Plotly.react('bar-chart', [{
+        x: rows.map(r => r.label),
+        y: rows.map(r => bytesToTiB(r.size_bytes)),
+        customdata: rows.map(r => fmtBytes(r.size_bytes)),
         type: 'bar',
-        marker:{color:'#58a6ff'},
-        hovertemplate: '%{x}<br>%{y} TiB<extra></extra>'
+        marker: { color: '#58a6ff' },
+        hovertemplate: '%{x}<br>%{customdata}<extra></extra>',
       }], {
-        title: 'Total Size by MIME Type (TiB)',
-        xaxis:{tickangle:-45}, margin:{t:50,b:120},
-        paper_bgcolor:'transparent', plot_bgcolor:'transparent',
-        font:{color:'#e6edf3'}
-      });
+        ...LAYOUT,
+        title: 'Total Size by MIME Type (TiB, log scale)',
+        xaxis: { ...LAYOUT.xaxis, tickangle: -45 },
+        yaxis: { ...LAYOUT.yaxis, type: 'log', title: 'TiB', exponentformat: 'power' },
+        height: 450,
+        margin: { t: 50, b: 40 },
+      }, CONFIG);
 
-      Plotly.newPlot('top10-chart', [{
-        x: top10.map(r=>r.mime),
-        y: top10.map(r=>bytesToTB(r.size_bytes)),
-        type:'bar', marker:{color:'#00b8a9'},
-        hovertemplate:'%{x}<br>%{y} TiB<extra></extra>'
+      // Average file size highlights what the totals hide (e.g. TIFF/PDF vs JPEG).
+      const avg = rows.filter(r => r.files > 0)
+        .map(r => ({ ...r, avg: r.size_bytes / r.files }))
+        .sort((a, b) => b.avg - a.avg).slice(0, 10);
+      Plotly.react('top10-chart', [{
+        x: avg.map(r => r.label),
+        y: avg.map(r => r.avg / 1024 ** 2),
+        customdata: avg.map(r => fmtBytes(r.avg)),
+        type: 'bar', marker: { color: '#00b8a9' },
+        hovertemplate: '%{x}<br>%{customdata} per file<extra></extra>',
       }], {
-        title: 'Top 10 Largest MIME Types',
-        xaxis:{tickangle:-45}, margin:{t:50,b:120},
-        paper_bgcolor:'transparent', plot_bgcolor:'transparent',
-        font:{color:'#e6edf3'}
-      });
+        ...LAYOUT,
+        title: 'Top 10 MIME Types by Average File Size (MiB)',
+        xaxis: { ...LAYOUT.xaxis, tickangle: -45 },
+        yaxis: { ...LAYOUT.yaxis, title: 'MiB per file' },
+        margin: { t: 50, b: 40 },
+      }, CONFIG);
+    }
 
+    function renderTable(rows) {
       const tbody = document.querySelector('#data-table tbody');
-      tbody.innerHTML = "";
-      rows.forEach(d=>{
+      tbody.replaceChildren();
+      rows.forEach(d => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${d.mime}</td><td>${d.ext}</td><td>${d.files.toLocaleString()}</td><td>${bytesToTB(d.size_bytes)}</td><td>${((d.size_bytes/totalBytes)*100).toFixed(2)}%</td>`;
+        const cells = [
+          [d.mime], [d.section], [d.ext],
+          [fmtInt(d.files), 'num'],
+          [fmtPct(d.percent ?? d.files / totalFiles * 100), 'num'],
+          [fmtBytes(d.size_bytes), 'num'],
+          [fmtPct(d.size_percent || d.size_bytes / totalBytes * 100), 'num'],
+        ];
+        cells.forEach(([text, cls]) => {
+          const td = document.createElement('td');
+          td.textContent = text;
+          if (cls) td.className = cls;
+          tr.appendChild(td);
+        });
         tbody.appendChild(tr);
       });
     }
 
-    document.querySelectorAll('.filter').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         render(btn.dataset.group);
       });
     });
 
     render('all');
+  }).catch(err => {
+    console.error(err);
+    showError('Could not load media statistics: ' + err.message);
   });
   </script>
 </body>
