@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -20,6 +26,8 @@ jobs:
           python-version: "3.11"
       - run: pip install requests beautifulsoup4
       - run: python fetch_stats.py
+        # If Commons is unreachable, still deploy the site with the last good data.
+        continue-on-error: true
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

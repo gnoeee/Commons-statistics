@@ -1,159 +1,230 @@
 {
   "source": "https://commons.wikimedia.org/wiki/Special:MediaStatistics",
+  "updated": "2026-11-22T15:18:30Z",
+  "totals": {
+    "files": 150479003,
+    "size_bytes": 1168417876192487
+  },
   "entries": [
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 11,
       "percent": 7.31e-06,
-      "size_bytes": 116730460
+      "size_bytes": 116730460,
+      "size_percent": 9.99e-06
     },
     {
       "mime": "image/x-xcf",
       "ext": ".xcf",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 1728,
       "percent": 0.00115,
-      "size_bytes": 14465342352
+      "size_bytes": 14465342352,
+      "size_percent": 0.00124
     },
     {
       "mime": "image/webp",
       "ext": ".webp",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 70685,
       "percent": 0.047,
-      "size_bytes": 47535883283
+      "size_bytes": 47535883283,
+      "size_percent": 0.00407
     },
     {
       "mime": "image/gif",
       "ext": ".gif",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 413409,
       "percent": 0.275,
-      "size_bytes": 1458938302785
+      "size_bytes": 1458938302785,
+      "size_percent": 0.125
     },
     {
       "mime": "image/tiff",
       "ext": ".tiff, .tif",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 4852471,
       "percent": 3.22,
-      "size_bytes": 408984483031889
+      "size_bytes": 408984483031889,
+      "size_percent": 35.0
     },
     {
       "mime": "image/png",
       "ext": ".png, .apng",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 5638547,
       "percent": 3.75,
-      "size_bytes": 24698108197882
+      "size_bytes": 24698108197882,
+      "size_percent": 2.11
     },
     {
       "mime": "image/jpeg",
       "ext": ".jpeg, .jpg, .jpe, .jps",
+      "category": "bitmap",
+      "category_label": "Bitmap images",
       "files": 121834571,
       "percent": 81.0,
-      "size_bytes": 438299338035111
+      "size_bytes": 438299338035111,
+      "size_percent": 37.5
     },
     {
       "mime": "image/svg+xml",
       "ext": ".svg",
+      "category": "drawing",
+      "category_label": "Drawings (vector images)",
       "files": 5334551,
       "percent": 3.55,
-      "size_bytes": 1342400033776
+      "size_bytes": 1342400033776,
+      "size_percent": 0.115
     },
     {
       "mime": "audio/webm",
       "ext": ".webm",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 358,
       "percent": 0.000238,
-      "size_bytes": 6227731102
+      "size_bytes": 6227731102,
+      "size_percent": 0.000533
     },
     {
       "mime": "audio/midi",
       "ext": ".mid, .midi, .kar",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 7124,
       "percent": 0.00473,
-      "size_bytes": 30212553
+      "size_bytes": 30212553,
+      "size_percent": 2.59e-06
     },
     {
       "mime": "audio/flac",
       "ext": ".flac",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 16460,
       "percent": 0.0109,
-      "size_bytes": 51383621996
+      "size_bytes": 51383621996,
+      "size_percent": 0.0044
     },
     {
       "mime": "audio/x-flac",
       "ext": ".flac",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 18154,
       "percent": 0.0121,
-      "size_bytes": 153951190573
+      "size_bytes": 153951190573,
+      "size_percent": 0.0132
     },
     {
       "mime": "audio/mpeg",
       "ext": ".mpga, .mpa, .mp2, .mp3",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 51865,
       "percent": 0.0345,
-      "size_bytes": 834393593619
+      "size_bytes": 834393593619,
+      "size_percent": 0.0714
     },
     {
       "mime": "audio/wav",
       "ext": ".wav",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 1730301,
       "percent": 1.15,
-      "size_bytes": 785896187169
+      "size_bytes": 785896187169,
+      "size_percent": 0.0673
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
+      "category": "audio",
+      "category_label": "Audio",
       "files": 2637188,
       "percent": 1.75,
-      "size_bytes": 877557059697
+      "size_bytes": 877557059697,
+      "size_percent": 0.0751
     },
     {
       "mime": "video/mp4",
       "ext": ".mp4, .m4a, .m4p, .m4b, .m4r, .m4v",
+      "category": "video",
+      "category_label": "Videos",
       "files": 2,
       "percent": 1.33e-06,
-      "size_bytes": 137513163
+      "size_bytes": 137513163,
+      "size_percent": 1.18e-05
     },
     {
       "mime": "video/mpeg",
       "ext": ".mpg, .mpeg, .mpe",
+      "category": "video",
+      "category_label": "Videos",
       "files": 1160,
       "percent": 0.000771,
-      "size_bytes": 231117629352
+      "size_bytes": 231117629352,
+      "size_percent": 0.0198
     },
     {
       "mime": "application/ogg",
       "ext": ".ogx, .ogg, .ogm, .ogv, .oga, .spx, .opus",
+      "category": "video",
+      "category_label": "Videos",
       "files": 158303,
       "percent": 0.105,
-      "size_bytes": 3232075892600
+      "size_bytes": 3232075892600,
+      "size_percent": 0.277
     },
     {
       "mime": "video/webm",
       "ext": ".webm",
+      "category": "video",
+      "category_label": "Videos",
       "files": 259548,
       "percent": 0.172,
-      "size_bytes": 43769542743945
+      "size_bytes": 43769542743945,
+      "size_percent": 3.75
     },
     {
       "mime": "image/vnd.djvu",
       "ext": ".djvu, .djv",
+      "category": "office",
+      "category_label": "Office",
       "files": 371698,
       "percent": 0.247,
-      "size_bytes": 4422828788257
+      "size_bytes": 4422828788257,
+      "size_percent": 0.379
     },
     {
       "mime": "application/pdf",
       "ext": ".pdf",
+      "category": "office",
+      "category_label": "Office",
       "files": 7068966,
       "percent": 4.7,
-      "size_bytes": 238909100099721
+      "size_bytes": 238909100099721,
+      "size_percent": 20.4
     },
     {
       "mime": "application/sla",
       "ext": ".stl",
+      "category": "3d",
+      "category_label": "3D",
       "files": 11903,
       "percent": 0.00791,
-      "size_bytes": 298248371202
+      "size_bytes": 298248371202,
+      "size_percent": 0.0255
     }
   ]
 }
