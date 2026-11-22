@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wikimedia Commons — Media Statistics History</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+  <script src="https://cdn.plot.ly/plotly-2.29.1.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --text: #e6edf3;
+      --up: #3fb950;
+      --down: #f85149;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+    a { color: var(--accent); }
+    .container { max-width: 1200px; margin: auto; }
+    header { text-align: center; margin-bottom: 1.2rem; }
+    h1 { margin: 0; font-size: 1.6rem; color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.9rem; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 1rem; }
+    .kpi, .chart-box, .player {
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      min-width: 0;
+    }
+    .kpi { padding: 14px 16px; text-align: center; }
+    .kpi-label { color: var(--muted); font-size: 0.9rem; }
+    .kpi-value { font-size: 1.4rem; font-weight: bold; color: var(--accent); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+    .kpi-delta { font-size: 0.85rem; font-variant-numeric: tabular-nums; min-height: 1.2em; }
+    .kpi-delta.up { color: var(--up); }
+    .kpi-delta.down { color: var(--down); }
+
+    .player { padding: 12px 16px; margin-bottom: 12px; }
+    .player-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .player-row + .player-row { margin-top: 10px; }
+    .btn {
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+    .btn:hover { background: #1f2a37; }
+    .btn.active, .btn.primary { background: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn.primary { min-width: 92px; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .seek { flex: 1 1 240px; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+    .seek input[type=range] { flex: 1; accent-color: var(--accent); }
+    .date-label { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+    select {
+      background: var(--card); color: var(--text); border: 1px solid #30363d;
+      border-radius: 6px; padding: 5px 8px; font-size: 0.9rem;
+    }
+    label.opt { color: var(--muted); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+    .group { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+    .spacer { flex: 1; }
+
+    .grid { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; }
+    .chart-box { padding: 10px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 0.8rem; color: var(--muted); padding: 4px 0 2px; }
+    .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; background: var(--c); vertical-align: -1px; }
+    .error { background: #3d1418; border: 1px solid var(--down); color: #ffdcd7; padding: 12px; border-radius: 8px; margin-bottom: 1rem; display: none; }
+    .note { color: var(--muted); font-size: 0.8rem; text-align: center; margin-top: 12px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 500px) {
+      body { padding: 12px; }
+      h1 { font-size: 1.25rem; }
+      .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi { padding: 10px; }
+      .kpi-value { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📈 Media Statistics — History</h1>
+      <p class="subtitle">
+        Daily snapshots of <a href="https://commons.wikimedia.org/wiki/Special:MediaStatistics" target="_blank" rel="noopener">Special:MediaStatistics</a>
+        <span id="range"></span> · <a href="./">← Back to dashboard</a>
+      </p>
+    </header>
+
+    <div id="error" class="error" role="alert"></div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Snapshot</div><div id="kpi-date" class="kpi-value">—</div><div id="kpi-day" class="kpi-delta"></div></div>
+      <div class="kpi"><div class="kpi-label">Files</div><div id="kpi-files" class="kpi-value">—</div><div id="kpi-files-d" class="kpi-delta"></div></div>
+      <div class="kpi"><div class="kpi-label">Size</div><div id="kpi-size" class="kpi-value">—</div><div id="kpi-size-d" class="kpi-delta"></div></div>
+      <div class="kpi"><div class="kpi-label">Most files added since start</div><div id="kpi-grow" class="kpi-value">—</div><div id="kpi-grow-d" class="kpi-delta"></div></div>
+    </div>
+
+    <div class="player">
+      <div class="player-row">
+        <button id="prev" class="btn" title="Previous day (←)" aria-label="Previous day">⏮</button>
+        <button id="play" class="btn primary" title="Play / pause (space)">⏸ Pause</button>
+        <button id="next" class="btn" title="Next day (→)" aria-label="Next day">⏭</button>
+        <div class="seek">
+          <input id="seek" type="range" min="0" max="0" value="0" aria-label="Snapshot date" />
+          <span id="seek-label" class="date-label">—</span>
+        </div>
+        <label class="opt">Speed
+          <select id="speed">
+            <option value="600">0.5×</option>
+            <option value="300" selected>1×</option>
+            <option value="150">2×</option>
+            <option value="70">4×</option>
+          </select>
+        </label>
+        <label class="opt"><input id="loop" type="checkbox" checked /> Loop</label>
+      </div>
+      <div class="player-row">
+        <div class="group" id="metric">
+          <button class="btn active" data-metric="files">Files</button>
+          <button class="btn" data-metric="size">Size</button>
+        </div>
+        <div class="group" id="scale">
+          <button class="btn active" data-scale="log">Log</button>
+          <button class="btn" data-scale="linear">Linear</button>
+        </div>
+        <span class="spacer"></span>
+        <div class="group" id="filters">
+          <button class="btn active" data-group="all">All</button>
+          <button class="btn" data-group="images">Images</button>
+          <button class="btn" data-group="audio">Audio</button>
+          <button class="btn" data-group="video">Video</button>
+          <button class="btn" data-group="documents">Office</button>
+          <button class="btn" data-group="3d">3D</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="chart-box">
+        <div id="race-chart"></div>
+        <div id="legend" class="legend"></div>
+      </div>
+      <div class="chart-box"><div id="total-chart"></div></div>
+    </div>
+    <div class="chart-box" style="margin-top:12px;"><div id="growth-chart"></div></div>
+
+    <p class="note">One snapshot per day, built from the commit history of <code>data/media_stats.json</code>. Keyboard: space = play/pause, ←/→ = step.</p>
+  </div>
+
+  <script>
+  const PLOTLY_FALLBACK = 'https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.29.1/plotly.min.js';
+  function ensurePlotly() {
+    if (typeof Plotly !== 'undefined') return Promise.resolve();
+    return new Promise(resolve => {
+      const s = document.createElement('script');
+      s.src = PLOTLY_FALLBACK;
+      s.onload = s.onerror = () => resolve();
+      document.head.appendChild(s);
+    });
+  }
+
+  const GROUPS = {
+    all: null,
+    images: ['bitmap', 'drawing'],
+    audio: ['audio'],
+    video: ['video', 'multimedia'],
+    documents: ['office', 'text'],
+    '3d': ['3d'],
+  };
+  const SECTIONS = {
+    bitmap:     { label: 'Bitmap images', color: '#58a6ff' },
+    drawing:    { label: 'Drawings',      color: '#bc8cff' },
+    audio:      { label: 'Audio',         color: '#f0883e' },
+    video:      { label: 'Videos',        color: '#f85149' },
+    multimedia: { label: 'Multimedia',    color: '#db61a2' },
+    office:     { label: 'Office',        color: '#3fb950' },
+    text:       { label: 'Text',          color: '#a5d6ff' },
+    '3d':       { label: '3D',            color: '#39c5cf' },
+    unknown:    { label: 'Other',         color: '#8b949e' },
+  };
+  const section = c => SECTIONS[c] || SECTIONS.unknown;
+
+  const fmtInt = n => Math.round(n).toLocaleString('en-US');
+  function fmtBytes(b) {
+    const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+    let i = 0;
+    while (Math.abs(b) >= 1024 && i < units.length - 1) { b /= 1024; i++; }
+    return `${b.toLocaleString('en-US', { maximumFractionDigits: Math.abs(b) < 10 ? 2 : 1 })} ${units[i]}`;
+  }
+  const signed = (n, fmt) => (n > 0 ? '+' : n < 0 ? '−' : '±') + fmt(Math.abs(n));
+  const fmtDate = d => new Date(d + 'T00:00:00Z').toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BASE = {
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { color: '#e6edf3' },
+  };
+  const AXIS = { gridcolor: 'rgba(255,255,255,0.08)', zerolinecolor: 'rgba(255,255,255,0.15)', automargin: true };
+  const CONFIG = { responsive: true, displaylogo: false, displayModeBar: false };
+
+  function showError(msg) {
+    const el = document.getElementById('error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function loadHistory() {
+    const res = await fetch('data/history.json?_=' + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status} loading data/history.json`);
+    return res.json();
+  }
+
+  Promise.all([loadHistory(), ensurePlotly()]).then(([hist]) => {
+    if (typeof Plotly === 'undefined') throw new Error('the charting library (Plotly) failed to load.');
+    const S = hist.series || [];
+    const F = hist.frames || [];
+    if (!F.length) throw new Error('the history file contains no snapshots.');
+
+    // Unique labels for MIME types listed in more than one section.
+    const counts = {};
+    S.forEach(s => counts[s.mime] = (counts[s.mime] || 0) + 1);
+    S.forEach(s => s.label = counts[s.mime] > 1 ? `${s.mime} (${section(s.category).label})` : s.mime);
+
+    document.getElementById('range').textContent =
+      ` · ${F.length} days from ${fmtDate(F[0].date)} to ${fmtDate(F[F.length - 1].date)}`;
+
+    const state = { i: 0, playing: true, metric: 'files', scale: 'log', group: 'all', timer: null };
+    const seek = document.getElementById('seek');
+    seek.max = F.length - 1;
+
+    const inGroup = s => { const g = GROUPS[state.group]; return !g || g.includes(s.category); };
+    const val = (f, k, metric = state.metric) => f[metric][k];
+    const fmtVal = (v, metric = state.metric) => metric === 'files' ? fmtInt(v) : fmtBytes(v);
+    const metricName = () => state.metric === 'files' ? 'Files' : 'Size';
+    // Size is plotted in TiB so axis ticks stay readable.
+    const plotVal = v => state.metric === 'files' ? v : v / 1024 ** 4;
+    const unit = () => state.metric === 'files' ? 'files' : 'TiB';
+
+    function seriesIdx() { return S.map((s, k) => k).filter(k => inGroup(S[k])); }
+
+    // Fixed x range for the race chart over the whole history, so bars grow visibly.
+    function raceRange(idx) {
+      let lo = Infinity, hi = 0;
+      for (const f of F) for (const k of idx) {
+        const v = plotVal(val(f, k) || 0);
+        if (v > 0) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+      }
+      if (!isFinite(lo)) return null;
+      return state.scale === 'log'
+        ? [Math.log10(lo) - 0.3, Math.log10(hi) + 0.3]
+        : [0, hi * 1.08];
+    }
+
+    // Legend chips for sections in the current filter.
+    function renderLegend(idx) {
+      const cats = [...new Set(idx.map(k => S[k].category))];
+      const el = document.getElementById('legend');
+      el.replaceChildren(...cats.map(c => {
+        const sp = document.createElement('span');
+        sp.style.setProperty('--c', section(c).color);
+        sp.textContent = section(c).label;
+        return sp;
+      }));
+    }
+
+    let cache = {};
+    function rebuild() {
+      const idx = seriesIdx();
+      cache = { idx, range: raceRange(idx) };
+      renderLegend(idx);
+      renderTotal(true);
+      draw(false);
+    }
+
+    function totals(f, idx = cache.idx) {
+      let files = 0, size = 0;
+      for (const k of idx) { files += f.files[k] || 0; size += f.size[k] || 0; }
+      return { files, size };
+    }
+
+    function renderTotal(full) {
+      const idx = cache.idx;
+      const ys = F.map(f => plotVal(totals(f, idx)[state.metric]));
+      const xs = F.map(f => f.date);
+      const i = state.i;
+      const traces = [
+        { x: xs, y: ys, type: 'scatter', mode: 'lines', line: { color: 'rgba(88,166,255,0.25)', width: 2 }, hoverinfo: 'skip', showlegend: false },
+        { x: xs.slice(0, i + 1), y: ys.slice(0, i + 1), type: 'scatter', mode: 'lines', line: { color: '#58a6ff', width: 3 },
+          hovertemplate: `%{x}<br>%{y:,.${state.metric === 'files' ? 0 : 1}f} ${unit()}<extra></extra>`, showlegend: false },
+        { x: [xs[i]], y: [ys[i]], type: 'scatter', mode: 'markers', marker: { color: '#e6edf3', size: 10, line: { color: '#58a6ff', width: 3 } }, hoverinfo: 'skip', showlegend: false },
+      ];
+      const layout = {
+        ...BASE,
+        title: `Total ${metricName().toLowerCase()} over time`,
+        height: 470,
+        margin: { t: 50, l: 10, r: 10, b: 40 },
+        xaxis: { ...AXIS, type: 'date' },
+        yaxis: { ...AXIS, title: unit(), tickformat: state.metric === 'files' ? '.3s' : ',.0f' },
+      };
+      if (full) Plotly.react('total-chart', traces, layout, CONFIG);
+      else Plotly.restyle('total-chart', { x: [traces[1].x, traces[2].x], y: [traces[1].y, traces[2].y] }, [1, 2]);
+    }
+
+    function draw(animate) {
+      const f = F[state.i], f0 = F[0];
+      const prev = F[Math.max(0, state.i - 1)];
+      const idx = cache.idx;
+
+      // KPIs
+      const t = totals(f), t0 = totals(f0);
+      document.getElementById('kpi-date').textContent = fmtDate(f.date);
+      document.getElementById('kpi-day').textContent = `Day ${state.i + 1} of ${F.length}`;
+      document.getElementById('kpi-files').textContent = fmtInt(t.files);
+      document.getElementById('kpi-size').textContent = fmtBytes(t.size);
+      setDelta('kpi-files-d', t.files - t0.files, fmtInt, 'since start');
+      setDelta('kpi-size-d', t.size - t0.size, fmtBytes, 'since start');
+
+      const growth = idx.map(k => ({ k, d: (f[state.metric][k] || 0) - (f0[state.metric][k] || 0) }));
+      const best = growth.slice().sort((a, b) => b.d - a.d)[0];
+      document.getElementById('kpi-grow').textContent = best && best.d > 0 ? S[best.k].label : '—';
+      setDelta('kpi-grow-d', best ? best.d : 0, v => fmtVal(v), metricName() === 'Files' ? 'files' : '');
+      document.querySelector('#kpi-grow').previousElementSibling.textContent =
+        state.metric === 'files' ? 'Most files added since start' : 'Most size added since start';
+
+      seek.value = state.i;
+      document.getElementById('seek-label').textContent = f.date;
+      document.getElementById('prev').disabled = state.i === 0;
+      document.getElementById('next').disabled = state.i === F.length - 1;
+
+      // Race chart: bars sorted by the current value, largest on top.
+      const rows = idx.map(k => ({ k, v: val(f, k) || 0 })).filter(r => r.v > 0).sort((a, b) => a.v - b.v);
+      const race = [{
+        type: 'bar', orientation: 'h',
+        y: rows.map(r => S[r.k].label),
+        x: rows.map(r => plotVal(r.v)),
+        marker: { color: rows.map(r => section(S[r.k].category).color) },
+        text: rows.map(r => fmtVal(r.v)),
+        // 'auto' puts the value inside long bars and outside short ones, so it never clips.
+        textposition: 'auto', insidetextanchor: 'end', cliponaxis: false,
+        textfont: { size: 11 },
+        insidetextfont: { size: 11, color: '#0d1117' },
+        outsidetextfont: { size: 11, color: '#c9d1d9' },
+        constraintext: 'none',
+        hovertemplate: rows.map(r => `${S[r.k].label}<br>${fmtVal(r.v)}<extra></extra>`),
+      }];
+      const raceLayout = {
+        ...BASE,
+        title: `${metricName()} by MIME type`,
+        height: Math.max(320, 70 + rows.length * 24),
+        margin: { t: 50, l: 10, r: 20, b: 30 },
+        bargap: 0.25,
+        xaxis: { ...AXIS, type: state.scale, range: cache.range, title: unit(),
+                 tickformat: state.scale === 'log' ? undefined : (state.metric === 'files' ? '.2s' : ',.0f'),
+                 exponentformat: 'power' },
+        yaxis: { ...AXIS, type: 'category', tickfont: { size: 11 } },
+        annotations: [{
+          text: f.date, xref: 'paper', yref: 'paper', x: 0.99, y: 0.02, xanchor: 'right', yanchor: 'bottom',
+          showarrow: false, font: { size: 28, color: 'rgba(230,237,243,0.18)' },
+        }],
+      };
+      if (animate && !reduceMotion) raceLayout.transition = { duration: Math.min(250, speed() * 0.8), easing: 'linear' };
+      Plotly.react('race-chart', race, raceLayout, CONFIG);
+
+      // Growth since the first snapshot, per type.
+      const g = growth.filter(r => r.d !== 0).sort((a, b) => b.d - a.d);
+      Plotly.react('growth-chart', [{
+        type: 'bar',
+        x: g.map(r => S[r.k].label),
+        y: g.map(r => plotVal(r.d)),
+        marker: { color: g.map(r => r.d >= 0 ? section(S[r.k].category).color : '#f85149') },
+        hovertemplate: g.map(r => `${S[r.k].label}<br>${signed(r.d, v => fmtVal(v))}<extra></extra>`),
+      }], {
+        ...BASE,
+        title: `Change in ${metricName().toLowerCase()} since ${fmtDate(f0.date)}`,
+        height: 380,
+        margin: { t: 50, l: 10, r: 10, b: 40 },
+        xaxis: { ...AXIS, tickangle: -45 },
+        yaxis: { ...AXIS, title: unit(), tickformat: state.metric === 'files' ? '.2s' : ',.1f' },
+      }, CONFIG);
+
+      renderTotal(false);
+    }
+
+    function setDelta(id, d, fmt, suffix) {
+      const el = document.getElementById(id);
+      el.textContent = `${signed(d, fmt)} ${suffix}`.trim();
+      el.className = 'kpi-delta ' + (d > 0 ? 'up' : d < 0 ? 'down' : '');
+    }
+
+    // Playback
+    const speed = () => +document.getElementById('speed').value;
+    const playBtn = document.getElementById('play');
+    function setPlaying(p) {
+      state.playing = p;
+      playBtn.textContent = p ? '⏸ Pause' : '▶ Play';
+      clearTimeout(state.timer);
+      if (p) {
+        if (state.i >= F.length - 1) { state.i = 0; draw(false); }
+        schedule(speed());
+      }
+    }
+    function schedule(ms) {
+      clearTimeout(state.timer);
+      state.timer = setTimeout(tick, ms);
+    }
+    function tick() {
+      if (!state.playing) return;
+      if (state.i < F.length - 1) {
+        state.i++;
+        draw(true);
+        // Hold briefly on the last frame before looping.
+        schedule(state.i === F.length - 1 ? 1500 : speed());
+      } else if (document.getElementById('loop').checked) {
+        state.i = 0;
+        draw(false);
+        schedule(speed() * 2);
+      } else {
+        setPlaying(false);
+      }
+    }
+    function goTo(i) {
+      state.i = Math.max(0, Math.min(F.length - 1, i));
+      draw(false);
+    }
+
+    playBtn.addEventListener('click', () => setPlaying(!state.playing));
+    document.getElementById('prev').addEventListener('click', () => { setPlaying(false); goTo(state.i - 1); });
+    document.getElementById('next').addEventListener('click', () => { setPlaying(false); goTo(state.i + 1); });
+    seek.addEventListener('input', () => { setPlaying(false); goTo(+seek.value); });
+    document.getElementById('speed').addEventListener('change', () => { if (state.playing) schedule(speed()); });
+
+    function toggleGroup(containerId, attr, apply) {
+      document.querySelectorAll(`#${containerId} .btn`).forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll(`#${containerId} .btn`).forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          apply(btn.dataset[attr]);
+          rebuild();
+        });
+      });
+    }
+    toggleGroup('metric', 'metric', v => state.metric = v);
+    toggleGroup('scale', 'scale', v => state.scale = v);
+    toggleGroup('filters', 'group', v => state.group = v);
+    document.querySelectorAll('#filters .btn').forEach(btn => {
+      const g = GROUPS[btn.dataset.group];
+      if (g && !S.some(s => g.includes(s.category))) btn.disabled = true;
+    });
+
+    document.addEventListener('keydown', e => {
+      // Focused controls handle their own keys (space clicks a button, arrows move the slider).
+      if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)) return;
+      if (e.key === ' ') { e.preventDefault(); setPlaying(!state.playing); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setPlaying(false); goTo(state.i - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); setPlaying(false); goTo(state.i + 1); }
+    });
+
+    // Pause while the tab is hidden so it doesn't race through frames unseen.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearTimeout(state.timer);
+      else if (state.playing) schedule(speed());
+    });
+
+    rebuild();
+    setPlaying(true);   // autoplay
+  }).catch(err => {
+    console.error(err);
+    showError('Could not load the history: ' + err.message);
+  });
+  </script>
+</body>
+</html>

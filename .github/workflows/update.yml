@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # build_history.py reads the full history of the data file
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -28,10 +30,11 @@ jobs:
       - run: python fetch_stats.py
         # If Commons is unreachable, still deploy the site with the last good data.
         continue-on-error: true
+      - run: python build_history.py
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/media_stats.json
+          git add data/media_stats.json data/history.json
           git commit -m "update: refresh media stats" || echo "No changes"
           git push
       - uses: actions/upload-pages-artifact@v3
