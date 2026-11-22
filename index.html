@@ -194,7 +194,19 @@
     return res.json();
   }
 
-  loadData().then(json => {
+  // cdn.plot.ly is blocked or rewritten on some networks; fall back to jsDelivr.
+  const PLOTLY_FALLBACK = 'https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.29.1/plotly.min.js';
+  function ensurePlotly() {
+    if (typeof Plotly !== 'undefined') return Promise.resolve();
+    return new Promise(resolve => {
+      const s = document.createElement('script');
+      s.src = PLOTLY_FALLBACK;
+      s.onload = s.onerror = () => resolve();
+      document.head.appendChild(s);
+    });
+  }
+
+  Promise.all([loadData(), ensurePlotly()]).then(([json]) => {
     const raw = json.entries || [];
     if (!raw.length) throw new Error('The data file contains no entries.');
 
